@@ -47,18 +47,11 @@ const Card = async (sequelize, DataTypes) => {
                     return `http://${config.app.host}:${config.app.port}${config.app.root}/images/${rawValue}`;
                 }
             },
-            height: {
+            hp: {
                 allowNull: false,
                 type: DataTypes.INTEGER,
                 validate: {
                     min: 1,
-                }
-            },
-            weight: {
-                allowNull: false,
-                type: DataTypes.FLOAT,
-                validate: {
-                    min: 0.10,
                 }
             },
             rarity: {
@@ -99,8 +92,7 @@ const Card = async (sequelize, DataTypes) => {
                 defaults: {
                     name: card.name,
                     imageUrl: card.image,
-                    height: card.height,
-                    weight: card.weight,
+                    hp: card.hp,
                     rarity: card.rarity,
                     attacks: card.attacks || [],
                     weakness: card.weaknesses || null

@@ -2,8 +2,7 @@ export default interface CardModel {
     cardId: string;
     name: string;
     imageUrl: string;
-    height: string;
-    weight: string;
+    hp: string;
     rarity: string;
     attacks: {
         name: string;

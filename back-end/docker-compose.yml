@@ -32,5 +32,25 @@ services:
     restart: always
     ports:
       - "8081:80"
+  nodeapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: nodeapp
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "${APP_PORT}:3000"
+    volumes:
+      - .:/app
+    command: npm start
+    depends_on:
+      db:
+        condition: service_healthy
 volumes:
   db:

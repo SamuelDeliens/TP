@@ -23,8 +23,7 @@ const rarityClass = computed(
     <img :src="card.imageUrl" :alt="card.name" />
 
     <div class="stats">
-      <p>📏 Taille : {{ card.height }}</p>
-      <p>⚖️ Poids : {{ card.weight }}</p>
+      <p>❤️ Health : {{ card.hp }}</p>
       <p>💥 Faiblesse : {{ card.weaknesses }}</p>
     </div>
 
