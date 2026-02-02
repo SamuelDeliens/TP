@@ -1,11 +1,32 @@
 <script setup lang="ts">
+import {useRouter} from "vue-router";
+import { useAuthStore } from '@/stores/auth.store';
 
+const router = useRouter();
+const auth = useAuthStore();
+
+const logout = async () => {
+  auth.handleLogout()
+  await router.push("/login")
+}
 </script>
 
 <template>
   <div class="nav-bar">
     <div class="nav-left">
-      <router-link to="/cards"><button>All The Cards</button></router-link>
+      <template v-if="auth.isAuthenticated">
+        <router-link to="/cards"><button>All The Cards</button></router-link>
+      </template>
+    </div>
+
+    <div class="nav-right">
+      <template v-if="auth.isAuthenticated">
+        <button @click="logout">Logout</button>
+      </template>
+      <template v-else>
+        <router-link to="/login"><button>Login</button></router-link>
+        <router-link to="/register"><button>Register</button></router-link>
+      </template>
     </div>
   </div>
 </template>

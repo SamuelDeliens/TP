@@ -1,15 +1,43 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth.store.ts";
+import type { AuthLoginType } from "@/types/api/auth.api.ts";
+
+const router = useRouter();
+const auth = useAuthStore();
+
+let username = "";
+let password = "";
+
 async function signIn() {
+  if (!username || !password) {
+    alert("Please enter username and password");
+    return;
+  }
+
+  const userInfo: AuthLoginType = {
+    login: username,
+    password,
+  };
+
+  try {
+    await auth.handleLogin(userInfo);
+    await router.push("/");
+  } catch (error: any) {
+    console.log(error);
+  }
 }
 </script>
 
 <template>
   <div class="auth-page">
     <h1>Sign In</h1>
-    <input type="text" placeholder="Username"/> <!--username-->
-    <input type="password" placeholder="Password"/> <!--password-->
-    <button>Sign in</button> <!--login-->
-    <a>Don't have an account yet?</a> <!--to register-->
+    <input v-model="username" type="text" placeholder="Username"/>
+    <input v-model="password" type="password" placeholder="Password"/>
+    <button @click="signIn">Sign in</button>
+    <router-link to="/register">
+      <a>Don't have an account yet?</a>
+    </router-link>
   </div>
 </template>
 
