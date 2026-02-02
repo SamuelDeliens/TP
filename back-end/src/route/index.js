@@ -6,6 +6,7 @@ import userCardRoutes from "./userCard.js";
 import gachaRoutes from "./gacha.js";
 import path from "path";
 import {fileURLToPath} from "node:url";
+import {getOauthStatus, switchOauthStatus} from "../config/config.js";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,6 +17,20 @@ router.get('/', (req, res) => res.status(200).send({
     error: false,
     message: 'Welcome to the api root'
 }))
+
+router.get(
+    '/swichAuth',
+    (req, res) => {
+        switchOauthStatus();
+        return res.status(200).send({
+            error: false,
+            message: 'Oauth Status Updated',
+            data: {
+                status: getOauthStatus()
+            }
+        });
+    }
+)
 
 router.use(
     '/images',

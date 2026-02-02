@@ -3,6 +3,14 @@ import dotenv from "dotenv";
 import {typePermissions} from "./constant.js";
 dotenv.config();
 
+let oauthStatus = process.env.OAUTH_STATUS === "true"
+export function switchOauthStatus() {
+    oauthStatus = !oauthStatus;
+}
+export function getOauthStatus() {
+    return oauthStatus;
+}
+
 export const config = {
     database: {
         name: process.env.DB_NAME || 'node',

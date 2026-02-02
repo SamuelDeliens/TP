@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import bcryptjs from "bcryptjs";
 
-import {config} from "../config/config.js";
+import {config, getOauthStatus} from "../config/config.js";
 import {ClientModel} from "../model/client.js";
 import {UserModel} from "../model/user.js";
 
@@ -157,6 +157,9 @@ async function handleToken(req, res, _next) {
 
 function isLogin(req, res, next) {
     console.log('isLogin');
+    if (!getOauthStatus()) {
+        return next()
+    }
 
     let accessToken = req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : null;
     let refreshToken = "";

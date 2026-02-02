@@ -1,5 +1,6 @@
 import { typePermissions } from "../config/constant.js";
 import {UserModel} from "../model/user.js";
+import {getOauthStatus} from "../config/config.js";
 
 function retrievePermissions(req) {
     const permissions = [];
@@ -38,6 +39,10 @@ function retrievePermissions(req) {
 function check(otherPermissions) {
     return async (req, res, next) => {
         console.log('isAuthorized');
+
+        if (!getOauthStatus()) {
+            return next()
+        }
 
         try {
             let permissions = [];
