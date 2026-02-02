@@ -1,0 +1,687 @@
+swagger: "2.0"
+info:
+  title: API for managing Team data
+  description: Team API
+  version: 1.0.0
+host: 'localhost:3000'
+basePath: '/api/v1'
+schemes:
+  - http
+paths:
+  /oauth/authorize:
+    get:
+      summary: 'Authorize a client'
+      tags:
+        - OAuth
+      parameters:
+        - in: query
+          name: clientId
+          schema:
+            type: string
+            example: '123456'
+          description: 'Client ID'
+          required: true
+        - in: query
+          name: redirectUri
+          schema:
+              type: string
+              example: 'http://localhost:3000/oauth/callback'
+          description: 'Redirect URI'
+          required: true
+      responses:
+        302:
+          description: 'Redirect to the specified URI'
+          headers:
+            Location:
+              type: string
+              format: uri
+              example: 'http://localhost:3000/oauth/callback?code=abcdef123456'
+        400:
+          description: 'Bad Request'
+          examples:
+            application/json:
+              error: true
+              message: 'Bad request'
+              data: 'clientId and redirectUri are required'
+        401:
+          description: 'Unauthorized user'
+          examples:
+            application/json:
+              error: true
+              message: 'Unauthorized user'
+              data: 'Authentication credentials were not provided or are invalid'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+  /oauth/token:
+    post:
+      summary: 'Get access and refresh tokens'
+      tags:
+        - OAuth
+      parameters:
+        - in: query
+          name: clientId
+          description: 'Client ID'
+          required: true
+          schema:
+            type: string
+            example: '123456'
+        - in: query
+          name: clientSecret
+          description: 'Client secret'
+          required: true
+          schema:
+              type: string
+              example: 'abcdef123456'
+        - in: query
+          name: code
+          description: 'Authorization code'
+          required: true
+          schema:
+              type: string
+              example: 'abcdef123456'
+        - in: body
+          name: body
+          description: 'User credentials'
+          schema:
+            type: object
+            properties:
+              login:
+                type: string
+                example: 'user'
+                description: 'Username'
+              password:
+                type: string
+                example: 'password'
+                description: 'Password'
+            required:
+              - login
+              - password
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          examples:
+            application/json:
+              error: false
+              message: 'OK'
+              data:
+                access_token: 'Bearer abcdef123456'
+                refresh_token: 'Bearer abcdef123456'
+                token_type: 'Bearer'
+                access_expires_in: 3600
+                refresh_expires_in: 86400
+        401:
+          description: 'Unauthorized client'
+          examples:
+            application/json:
+              error: true
+              message: 'Unauthorized client'
+              data: 'Authentication credentials were not provided or are invalid'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+
+  /register:
+    post:
+      tags:
+        - Users
+      summary: 'Register a new user'
+      description: 'Registers a new user with the provided information'
+      parameters:
+        - in: body
+          name: user
+          description: 'User object that needs to be added'
+          required: true
+          schema:
+            $ref: '#/definitions/UserRegister'
+      responses:
+        201:
+          description: 'User created'
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                description: 'Error flag'
+                example: false
+              message:
+                type: string
+                description: 'Message response'
+                example: 'User created'
+              data:
+                type: object
+                description: 'User data'
+                $ref: '#/definitions/User'
+        400:
+          description: 'Bad request'
+          examples:
+            application/json:
+              error: true
+              message: 'User already exists'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+  /users/{userId}:
+    get:
+      tags:
+        - Users
+      summary: 'Get a user by ID'
+      description: 'Returns a single user by ID'
+      security:
+        - oauth: [ ]
+        - permission: [ 'users:read' ]
+      parameters:
+        - in: path
+          name: userId
+          description: 'User ID'
+          required: true
+          schema:
+              type: integer
+              example: 1
+        - in: header
+          name: Authorization
+          description: 'Access token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+        - in: header
+          name: Refresh_Token
+          description: 'Refresh token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+      responses:
+        200:
+          description: A user
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                description: 'Error flag'
+                example: false
+              message:
+                type: string
+                description: 'Message response'
+                example: 'User found'
+              data:
+                type: object
+                description: 'User data'
+                $ref: '#/definitions/User'
+        401:
+          description: 'Unauthorized'
+          examples:
+            application/json:
+              error: true
+              message: 'Unauthorized'
+              data: 'Access token and refresh token are invalid'
+        403:
+          description: 'Forbidden'
+          examples:
+            application/json:
+              error: true
+              message: 'Forbidden'
+              data: 'User not authorized to access this resource'
+        404:
+          description: 'Not Found'
+          examples:
+            application/json:
+              error: true
+              message: 'User not found'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+  /users/{userId}/cards:
+    get:
+      tags:
+        - Users
+      summary: 'Get list of all Cards of the User'
+      description: 'Returns a list of all Cards of the User'
+      security:
+        - oauth: []
+        - permission: ['users:read']
+      parameters:
+        - in: path
+          name: userId
+          description: 'User ID'
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: header
+          name: Authorization
+          description: 'Access token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+        - in: header
+          name: Refresh_Token
+          description: 'Refresh token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+      responses:
+        200:
+          description: A list of Cards
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                description: 'Error flag'
+                example: false
+              message:
+                type: string
+                description: 'Message response'
+                example: 'Card list'
+              data:
+                type: array
+                description: 'List of Cards'
+                items:
+                  $ref: '#/definitions/Card'
+        400:
+          description: 'Bad request'
+          examples:
+            application/json:
+              error: true
+              message: 'Invalid field page'
+        401:
+          description: 'Unauthorized'
+          examples:
+            application/json:
+              error: true
+              message: 'Unauthorized'
+              data: 'Access token and refresh token are invalid'
+        403:
+          description: 'Forbidden'
+          examples:
+            application/json:
+              error: true
+              message: 'Forbidden'
+              data: 'User not authorized to access this resource'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+
+  /cards:
+    get:
+      tags:
+        - Cards
+      summary: 'Get list of all Cards'
+      description: 'Returns a list of all Cards'
+      security:
+        - oauth: []
+        - permission: ['cards:read']
+      parameters:
+        - in: header
+          name: Authorization
+          description: 'Access token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+        - in: header
+          name: Refresh_Token
+          description: 'Refresh token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+      responses:
+        200:
+          description: A list of Cards
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                description: 'Error flag'
+                example: false
+              message:
+                type: string
+                description: 'Message response'
+                example: 'Card list'
+              data:
+                type: array
+                description: 'List of Cards'
+                items:
+                  $ref: '#/definitions/Card'
+        400:
+          description: 'Bad request'
+          examples:
+            application/json:
+              error: true
+              message: 'Invalid field page'
+        401:
+          description: 'Unauthorized'
+          examples:
+            application/json:
+              error: true
+              message: 'Unauthorized'
+              data: 'Access token and refresh token are invalid'
+        403:
+          description: 'Forbidden'
+          examples:
+            application/json:
+              error: true
+              message: 'Forbidden'
+              data: 'User not authorized to access this resource'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+  /cards/{cardId}:
+    get:
+      tags:
+        - Cards
+      summary: 'Get detail of a Card'
+      description: 'Returns a Card'
+      security:
+        - oauth: []
+        - permission: ['cards:read']
+      parameters:
+        - in: path
+          name: cardId
+          description: 'Card ID'
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: header
+          name: Authorization
+          description: 'Access token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+        - in: header
+          name: Refresh_Token
+          description: 'Refresh token'
+          required: true
+          schema:
+            type: string
+            example: 'Bearer abcdef123456'
+      responses:
+        200:
+          description: A Card
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                description: 'Error flag'
+                example: false
+              message:
+                type: string
+                description: 'Message response'
+                example: 'Card list'
+              data:
+                type: object
+                description: 'A Card'
+                items:
+                  $ref: '#/definitions/Card'
+        400:
+          description: 'Bad request'
+          examples:
+            application/json:
+              error: true
+              message: 'Invalid field page'
+        401:
+          description: 'Unauthorized'
+          examples:
+            application/json:
+              error: true
+              message: 'Unauthorized'
+              data: 'Access token and refresh token are invalid'
+        403:
+          description: 'Forbidden'
+          examples:
+            application/json:
+              error: true
+              message: 'Forbidden'
+              data: 'User not authorized to access this resource'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal Server Error'
+              data: 'the error details'
+
+  /gacha:
+    post:
+      tags:
+        - Gacha
+      summary: 'Perform a Gacha pull'
+      description: 'Consumes one available gacha pull and returns a random card'
+      security:
+        - oauth: [ ]
+        - permission: [ 'gacha:read' ]
+      parameters:
+        - in: body
+          name: body
+          description: 'User performing the gacha'
+          required: true
+          schema:
+            type: object
+            required:
+              - userId
+            properties:
+              userId:
+                type: integer
+                example: 1
+        - in: header
+          name: Authorization
+          description: 'Access token'
+          required: true
+          type: string
+          example: 'Bearer abcdef123456'
+        - in: header
+          name: Refresh_Token
+          description: 'Refresh token'
+          required: true
+          type: string
+          example: 'Bearer abcdef123456'
+      responses:
+        200:
+          description: 'Gacha performed successfully'
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Gacha performed successfully'
+              data:
+                type: object
+                properties:
+                  obtainedCard:
+                    $ref: '#/definitions/Card'
+                  user:
+                    $ref: '#/definitions/User'
+        400:
+          description: 'No available gacha pulls'
+          examples:
+            application/json:
+              error: true
+              message: 'No available gacha pulls left'
+        404:
+          description: 'User or card not found'
+          examples:
+            application/json:
+              error: true
+              message: 'User not found'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal server error'
+  /gacha/add:
+    post:
+      tags:
+        - Gacha
+      summary: 'Add a gacha pull'
+      description: 'Adds one available gacha pull to a user'
+      security:
+        - oauth: [ ]
+        - permission: [ 'gacha:write' ]
+      parameters:
+        - in: body
+          name: body
+          description: 'User receiving the gacha pull'
+          required: true
+          schema:
+            type: object
+            required:
+              - userId
+            properties:
+              userId:
+                type: integer
+                example: 1
+        - in: header
+          name: Authorization
+          description: 'Access token'
+          required: true
+          type: string
+          example: 'Bearer abcdef123456'
+        - in: header
+          name: Refresh_Token
+          description: 'Refresh token'
+          required: true
+          type: string
+          example: 'Bearer abcdef123456'
+      responses:
+        200:
+          description: 'Gacha added successfully'
+          schema:
+            type: object
+            properties:
+              error:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Gacha add successfully'
+              data:
+                $ref: '#/definitions/User'
+        404:
+          description: 'User not found'
+          examples:
+            application/json:
+              error: true
+              message: 'User not found'
+        500:
+          description: 'Internal Server Error'
+          examples:
+            application/json:
+              error: true
+              message: 'Internal server error'
+
+definitions:
+  User:
+    type: object
+    required:
+      - login
+      - password
+    properties:
+      userId:
+        type: integer
+        example: 1
+        description: 'Unique identifier for the user'
+      login:
+        type: string
+        example: 'ashketchum'
+        description: 'Login of the user'
+      password:
+        type: string
+        example: 'password'
+        description: 'Password of the user'
+      permission:
+        type: array
+        items:
+          type: string
+        example: ['users:create:self', 'users:read']
+        default: ['user:read', 'user:read']
+        description: 'List of permissions for the user'
+  UserRegister:
+    type: object
+    required:
+      - login
+      - password
+    properties:
+      login:
+        type: string
+        example: 'ashketchum'
+        description: 'Login of the user'
+      password:
+        type: string
+        example: 'password'
+        description: 'Password of the user'
+
+  Card:
+    type: object
+    required:
+      - name
+      - imageUrl
+      - hp
+      - rarity
+      - attacks
+    properties:
+      cardId:
+        type: integer
+        example: 1
+        description: 'Unique identifier for the card'
+      name:
+        type: string
+        example: 'ashketchum'
+        description: 'Name of the card'
+      imageUrl:
+        type: string
+        example: 'ashketchum'
+        description: 'Image Url of the card'
+      hp:
+        type: number
+        example: '1'
+        description: 'Hp of the card'
+      rarity:
+        type: string
+        example: 'Common'
+        description: 'Rarity of the card'
+      attacks:
+        type: array
+        items:
+          type: object
+        example: [{name: '', damage: '', description: ''}]
+        description: 'Attacks of the card'
+

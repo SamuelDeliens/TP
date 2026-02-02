@@ -1,6 +1,7 @@
 import express from 'express'
 import router from "./route/index.js";
 import {config} from "./config/config.js";
+import { swaggerDefinition, swaggerUi } from "./swagger.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(`${config.app.root}/swagger-ui`, swaggerUi.serve, swaggerUi.setup(swaggerDefinition));
 app.use(config.app.root, router);
 
 app.use((req, res, next) => {
