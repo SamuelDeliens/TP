@@ -5,7 +5,7 @@ import {createRouter, createWebHistory} from "vue-router";
 
 const routes = [
     { path: '/cards', component: CardsPage },
-    { path: '/cardsDetail', component: CardDetailPage },
+    { path: '/cards/:cardId', component: CardDetailPage },
     { path: '/:catchAll(.*)', component: Error404Page },
 ];
 

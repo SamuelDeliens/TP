@@ -6,7 +6,6 @@
   <div class="nav-bar">
     <div class="nav-left">
       <router-link to="/cards"><button>All The Cards</button></router-link>
-      <router-link to="/cardsDetail"><button>Card Detail</button></router-link>
     </div>
   </div>
 </template>

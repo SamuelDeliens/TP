@@ -4,9 +4,11 @@ import NavBar from "@/components/NavBar.vue";
 
 <template>
   <NavBar></NavBar>
-  <main>
-    <router-view></router-view>
-  </main>
+  <suspense>
+    <main>
+      <router-view></router-view>
+    </main>
+  </suspense>
 </template>
 
 <style scoped>
