@@ -1,13 +1,22 @@
 <script setup lang="ts">
+import Card from "@/components/Card.vue";
+import type CardModel from "@/types/model/card.model.ts";
+
+defineProps({
+  cards: {
+    type: Object as () => CardModel[],
+    required: true
+  }
+});
 </script>
 
 <template>
-  <template>
+  <template v-if="cards.length > 0">
     <div class="cards">
-      <!--?-->
+      <Card v-for="card in cards" :key="card.cardId" :card="card" />
     </div>
   </template>
-  <template>
+  <template v-else>
     <h3>No card</h3>
   </template>
 </template>

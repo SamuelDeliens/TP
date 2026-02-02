@@ -1,21 +1,38 @@
 <script setup lang="ts">
+import type CardModel from "@/types/model/card.model";
+import { useRouter } from "vue-router";
+import { computed } from "vue";
+
+const props = defineProps({
+  card: {
+    type: Object as () => CardModel,
+    required: true
+  }
+});
+
+const router = useRouter();
+
 const openCard = async () => {
+  await router.push(`/cards/${props.card.cardId}`);
 };
 
-const rarityClass = "";
+const rarityClass = computed(
+    () => `rarity-${props.card.rarity.toLowerCase()}`
+);
 </script>
 
 <template>
   <div class="card" :class="rarityClass" @click="openCard">
     <div class="rarity-icon"></div>
 
-    <h1><!--name--></h1>
-    <img /> <!--img-->
+    <h1>{{ card.name }}</h1>
+
+    <img :src="card.imageUrl" :alt="card.name" />
 
     <div class="attacks">
-      <template>
-        <h3><!--name damage--></h3>
-        <p><!--desc--></p>
+      <template v-for="attack in card.attacks" :key="attack.name">
+        <h3>{{ attack.name }} ({{ attack.damage }})</h3>
+        <p>{{ attack.description }}</p>
       </template>
     </div>
   </div>
