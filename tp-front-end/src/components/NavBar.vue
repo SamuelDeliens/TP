@@ -15,6 +15,8 @@ const logout = async () => {
   <div class="nav-bar">
     <div class="nav-left">
       <template v-if="auth.isAuthenticated">
+        <router-link to="/"><button>My Cards</button></router-link>
+        <router-link to="/gacha"><button>Gacha</button></router-link>
         <router-link to="/cards"><button>All The Cards</button></router-link>
       </template>
     </div>

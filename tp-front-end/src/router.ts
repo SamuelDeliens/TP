@@ -7,6 +7,8 @@ import Error404Page from "@/pages/Error404Page.vue";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import RegisterPage from "@/pages/auth/RegisterPage.vue";
 import OauthPage from "@/pages/auth/OauthPage.vue";
+import GachaPage from "@/pages/GachaPage.vue";
+import UserCards from "@/pages/UserCards.vue";
 
 const routes = [
     {
@@ -18,6 +20,8 @@ const routes = [
                 meta: { requiresAuth: true },
                 component: AuthLayout,
                 children: [
+                    { path: '', component: UserCards },
+                    { path: 'gacha', component: GachaPage },
                     { path: 'cards', name: 'cards', component: CardsPage },
                     { path: 'cards/:cardId', component: CardDetailPage },
                 ]
@@ -56,7 +60,7 @@ router.beforeEach(async (to) => {
 
     //if we are in a login page or verified page => redirect to home
     if ((!to.meta.requiresVerified && auth.isVerified) || (!to.meta.requiresAuth && auth.isAuthenticated)) {
-        return { path: '/cards' }
+        return { path: '' }
     }
 });
 
