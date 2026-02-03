@@ -96,12 +96,13 @@ npm install
 
 
 ---
-# 🐳 Lancement avec Docker (recommandé)
+# 🐳 Lancement du back avec Docker
 
 Depuis la racine du projet :
 
 ```bash
-docker compose up --build
+cd back-end
+docker compose up 
 ```
 
 Services exposés :
@@ -117,7 +118,7 @@ Services exposés :
 - User / Password : depuis .env
 
 ---
-# ▶️ Lancement en mode développement (hors Docker)
+# ▶️ Lancement du front (hors Docker)
 
 ## Front-end
 ```bash
@@ -129,14 +130,102 @@ Accès par défaut :
 
 http://localhost:5173
 
-## Back-end
+---
+
+# 🧰 Outils utilisés côté Front-end
+## Node.js
+
+<img src="docs/images/nodejs.webp" alt="Node.js" width="60"/>
+
+Node.js est l’environnement d’exécution JavaScript utilisé hors navigateur.
+
+Dans ce projet, il sert principalement à :
+
+- exécuter le serveur de développement Vite
+- installer et gérer les dépendances du projet
+- lancer les scripts (npm run dev, npm install, etc.)
+
+👉 Node.js est indispensable pour travailler avec Vue, Vite et TypeScript.
+
+---
+
+## npm (Node Package Manager)
+
+<img src="docs/images/npm.webp" alt="npm.js" width="60"/>
+
+**npm** est le gestionnaire de paquets fourni avec Node.js.
+
+Il permet de :
+
+- télécharger les bibliothèques (Vue, Pinia, Axios, etc.)
+- gérer les versions des dépendances
+- lancer des scripts définis dans le **package.json**
+
+Exemples :
+
 ```bash
-cd back-end
+npm install
 npm run dev
 ```
 
-L’API démarre sur le port défini dans le .env (ex : 3000).
+---
 
-⚠️ Dans ce cas, MySQL doit être lancé séparément (Docker ou local).
+## TypeScript
+
+<img src="docs/images/typescript.webp" alt="typescript.js" width="60"/>
+
+TypeScript est un sur-ensemble de JavaScript qui ajoute le typage statique.
+
+Avantages :
+
+- détection d’erreurs à la compilation
+- meilleure lisibilité du code
+- auto-complétion plus efficace dans l’IDE
+- code plus robuste et maintenable
+
+Dans ce projet :
+
+- tous les fichiers front sont écrits en TypeScript
+- **vue-tsc** est utilisé pour vérifier les types dans les composants Vue
 
 ---
+
+## Vue 3
+
+<img src="docs/images/vue3.webp" alt="vue3.js" width="60"/>
+
+Vue.js est un framework JavaScript pour construire des interfaces utilisateur.
+
+Vue 3 apporte :
+
+- la Composition API (setup, ref, computed, etc.)
+  - Reactivité
+  - Evolutif
+- de meilleures performances
+- une intégration native avec TypeScript
+
+Dans l’application :
+
+- Vue gère l’affichage et les composants
+- vue-router gère la navigation
+- pinia gère l’état global (store)
+
+---
+
+## Vite
+
+<img src="docs/images/vite.webp" alt="vite.js" width="60"/>
+
+Vite est l’outil de build et de serveur de développement du projet.
+
+Il remplace des outils plus anciens comme Webpack et offre :
+
+- un démarrage quasi instantané
+- le hot reload (rechargement automatique à chaque modification)
+- une configuration simple 
+- un excellent support de TypeScript et Vue 3
+
+Vite est utilisé pour :
+
+- lancer le front en développement (npm run dev)
+- construire l’application pour la production
