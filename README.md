@@ -140,26 +140,3 @@ L’API démarre sur le port défini dans le .env (ex : 3000).
 ⚠️ Dans ce cas, MySQL doit être lancé séparément (Docker ou local).
 
 ---
-
-# ✅ Résumé rapide
-Obligatoire
-
-Node.js ≥ 18
-
-Docker + Docker Compose
-
-npm
-
-Optionnel
-
-Git
-
-Lancer le back-end hors Docker
-
-Si tu veux, je peux aussi te faire :
-
-une version ultra-courte “TL;DR”
-
-un README plus pro (open-source / recruteur)
-
-ou un schéma d’architecture du projet 🚀
