@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Backend – Docker Compose",
+        "type": "node",
+        "request": "launch",
+        "preLaunchTask": "backend: docker compose up",
+        "postDebugTask": "backend: docker compose down"
+      },
+      {
+        "name": "Frontend – Vite",
+        "type": "node",
+        "request": "launch",
+        "preLaunchTask": "frontend: vite dev"
+      },
+      {
+        "name": "TP - Frontend – Vite",
+        "type": "node",
+        "request": "launch",
+        "preLaunchTask": "TP - frontend: vite dev"
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Full Stack",
+        "configurations": [
+          "Backend – Docker Compose",
+          "Frontend – Vite"
+        ]
+      },
+      {
+        "name": "TP - Full Stack",
+        "configurations": [
+          "Backend – Docker Compose",
+          "TP - Frontend – Vite"
+        ]
+      },
+    ]
+  }
+  

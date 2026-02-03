@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "backend: docker compose up",
+        "type": "shell",
+        "command": "docker-compose up",
+        "isBackground": true,
+        "problemMatcher": [],
+        "options": {
+          "cwd": "${workspaceFolder}/back-end"
+        }
+      },
+      {
+        "label": "backend: docker compose down",
+        "type": "shell",
+        "command": "docker compose down",
+        "options": {
+          "cwd": "${workspaceFolder}/back-end"
+        }
+      },
+      {
+        "label": "frontend: vite dev",
+        "type": "shell",
+        "command": "npm run dev",
+        "isBackground": true,
+        "problemMatcher": [],
+        "options": {
+          "cwd": "${workspaceFolder}/front-end"
+        }
+      },
+      {
+        "label": "TP - frontend: vite dev",
+        "type": "shell",
+        "command": "npm run dev",
+        "isBackground": true,
+        "problemMatcher": [],
+        "options": {
+          "cwd": "${workspaceFolder}/tp-front-end"
+        }
+      },
+    ]
+  }
+  
