@@ -69,6 +69,7 @@ async function handleAuthorize(req, res, _next) {
     const client = await ClientModel.findOne({
         where: {clientId: clientId, redirectUri: redirectUri}
     })
+    console.log(client);
     if (!client) {
         return res.status(401).send({
             error: true,
